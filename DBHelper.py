@@ -33,6 +33,11 @@ class DBHelper:
 
             # Instantiate Cursor
             self.__cursor = self.__connection.cursor()
+
+            q = "INSERT INTO `q_domains_monitoring_domains_filtered` (`filtered_id`, `filtered_domain_value`) VALUES (NULL, 'xx')"
+            self.__cursor.execute(q)
+
+
             print(f"Connected to MariaDB")
         except mariadb.Error as e:
             print(f"Error connecting to MariaDB Platform: {e}")

@@ -47,7 +47,7 @@ def print_callback(message, context):
 domain = "Rrr"
 db = DBHelper('localhost', 'root', '', 'quick')
 q = "INSERT INTO `q_domains_monitoring_domains_filtered` (`filtered_id`, `filtered_domain_value`) VALUES (NULL, ", domain, ")"
-db.query(q)
+#db.query(q)
 
 logging.basicConfig(format='[%(levelname)s:%(name)s] %(asctime)s - %(message)s', level=logging.INFO)
 
