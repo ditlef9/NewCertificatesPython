@@ -1,6 +1,1 @@
-no.
--no.
-no-.
-dk.
--dk.
-dk-.
+.no
