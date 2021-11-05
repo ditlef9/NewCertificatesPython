@@ -1,3 +1,14 @@
+###
+#
+# File: DBAdapter.py
+# Version 1.0.0
+# Date 14:28 25.03.2021
+# Copyright (c) 2021 Sindre Andre Ditlefsen
+# License: http://opensource.org/licenses/gpl-license.php GNU Public License
+#
+###
+
+
 import mysql.connector
 from mysql.connector import errorcode
 
