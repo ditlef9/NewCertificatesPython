@@ -25,7 +25,7 @@ class DBAdapter:
 
     # New MySQL class ----------------------------------------------------------------------
     def __new__(cls, host='localhost', user='root', password='', database='', *args, **kwargs):
-        print("Creating Instance")
+        # print("Creating Instance")
         instance = super(DBAdapter, cls).__new__(cls, *args, **kwargs)
         return instance
 
@@ -43,7 +43,7 @@ class DBAdapter:
                                                  host=self.__host,
                                                  database=self.__database)
             self.__cursor = self.__cnx.cursor()
-            print("Connected to MySQL")
+            # print("Connected to MySQL")
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
                 print("Something is wrong with your user name or password")
@@ -56,24 +56,6 @@ class DBAdapter:
     def close(self):
         self.__cnx.close()
         self.__cursor.close()
-
-    # Last row id --------------------------------------------------------------------------
-    def lastRowId(self, table):
-        last_row_id = self.__cursor.lastrowid
-        return last_row_id
-
-    # Insert data ---------------------------------------------------------------------------
-    # add = ("INSERT INTO employees "
-    #                "(first_name, last_name, hire_date, gender, birth_date) "
-    #                "VALUES (%s, %s, %s, %s, %s)")
-    # data = ('Geert', 'Vanderkelen', tomorrow, 'M', date(1977, 6, 14))
-    def insert(self, add, data):
-        print("Insert into MySQL")
-        self.__cursor.execute(add, data)
-        last_row_id = self.__cursor.lastrowid
-        self.__cnx.commit()
-
-        return last_row_id
 
     # Create table ---------------------------------------------------------------------------
     # table = (
@@ -93,3 +75,54 @@ class DBAdapter:
                 print(err.msg)
         else:
             print("OK")
+
+    # Last row id --------------------------------------------------------------------------
+    def lastRowId(self, table):
+        last_row_id = self.__cursor.lastrowid
+        return last_row_id
+
+    # Insert data ---------------------------------------------------------------------------
+    # add = ("INSERT INTO employees "
+    #                "(first_name, last_name, hire_date, gender, birth_date) "
+    #                "VALUES (%s, %s, %s, %s, %s)")
+    # data = ('Geert', 'Vanderkelen', tomorrow, 'M', date(1977, 6, 14))
+    def insert(self, add, data):
+        print("Insert into MySQL")
+        self.__cursor.execute(add, data)
+        last_row_id = self.__cursor.lastrowid
+        self.__cnx.commit()
+
+        return last_row_id
+
+    # Last row id --------------------------------------------------------------------------
+    def select(self, table, where=None, *args, **kwargs):
+        result = None
+        query = 'SELECT '
+        keys = args
+        values = tuple(kwargs.values())
+        l = len(keys) - 1
+
+        for i, key in enumerate(keys):
+            query += "`"+key+"`"
+            if i < l:
+                query += ","
+        ## End for keys
+
+        query += 'FROM %s' % table
+
+        if where:
+            query += " WHERE %s" % where
+        ## End if where
+
+        self.__cursor.execute(query, values)
+        number_rows = self.__cursor.rowcount
+        number_columns = len(self.__cursor.description)
+
+        if number_rows >= 1 and number_columns > 1:
+            result = [item for item in self.__cursor.fetchall()]
+        else:
+            result = [item[0] for item in self.__cursor.fetchall()]
+
+        return result
+    ## End def select
+
