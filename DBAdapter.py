@@ -64,3 +64,22 @@ class DBAdapter:
         self.__cnx.commit()
 
         return last_row_id
+
+    # Create table ---------------------------------------------------------------------------
+    # table = (
+    #     "CREATE TABLE `employees` ("
+    #     "  `emp_no` int(11) NOT NULL AUTO_INCREMENT,"
+    #     "  `birth_date` date NOT NULL,"
+    #     "  PRIMARY KEY (`emp_no`)"
+    #     ") ENGINE=InnoDB")
+    def createTable(self, table_description):
+        try:
+            print("Creating table", end='')
+            self.__cursor.execute(table_description)
+        except mysql.connector.Error as err:
+            if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
+                print("already exists.")
+            else:
+                print(err.msg)
+        else:
+            print("OK")

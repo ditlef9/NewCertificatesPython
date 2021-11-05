@@ -102,8 +102,49 @@ def insertDomain(domain):
 
     db.close()
 
+# Create tables ---------------------------------------------------------------------------------
+def createTables():
+    # MySQL create table
+    db = DBAdapter('localhost', 'root', '', 'quick')
+    db.open()
+
+    domains_filtered = (
+        "CREATE TABLE IF NOT EXISTS `q_domains_monitoring_domains_filtered` ( "
+        "`filtered_id` int(11) NOT NULL AUTO_INCREMENT, "
+        "`filtered_domain_id` int(11) DEFAULT NULL, "
+        "`filtered_domain_value` varchar(200) DEFAULT NULL, "
+        "`filtered_group_id` int(11) DEFAULT NULL, "
+        "`filtered_by_user_id` int(11) DEFAULT NULL, "
+        "`filtered_date` date DEFAULT NULL, "
+        "`filtered_date_saying` varchar(100) DEFAULT NULL, "
+        "`filtered_datetime` datetime DEFAULT NULL, "
+        "`filtered_domain_sld` varchar(200) DEFAULT NULL, "
+        "`filtered_domain_tld` varchar(20) DEFAULT NULL, "
+        "`filtered_domain_sld_length` int(11) DEFAULT NULL, "
+        "`filtered_score` int(11) DEFAULT NULL, "
+        "`filtered_domain_registered_date` date DEFAULT NULL, "
+        "`filtered_domain_registered_date_saying` varchar(100) DEFAULT NULL, "
+        "`filtered_domain_registered_datetime` datetime DEFAULT NULL, "
+        "`filtered_domain_seen_before_times` int(11) DEFAULT NULL, "
+        "`filtered_domain_ip` varchar(100) DEFAULT NULL, "
+        "`filtered_domain_host_addr` varchar(100) DEFAULT NULL, "
+        "`filtered_domain_host_name` varchar(100) DEFAULT NULL, "
+        "`filtered_domain_host_url` varchar(100) DEFAULT NULL, "
+        "`filtered_domain_filters_activated` varchar(100) DEFAULT NULL, "
+        "`filtered_domain_seen_by_group` int(11) DEFAULT NULL, "
+        "`filtered_domain_emailed` int(11) DEFAULT NULL, "
+        "`filtered_notes` varchar(200) DEFAULT NULL, "
+        " PRIMARY KEY (`filtered_id`) "
+        " ) ENGINE=MyISAM AUTO_INCREMENT=19352 DEFAULT CHARSET=latin1;")
+
+    db.createTable(domains_filtered)
+
+    db.close()
+
+
 
 # Scriptstart ------------------------------------------------------------------------------------
+createTables()
 logging.basicConfig(format='[%(levelname)s:%(name)s] %(asctime)s - %(message)s', level=logging.INFO)
 
 certstream.listen_for_events(print_callback, url='wss://certstream.calidog.io/')
