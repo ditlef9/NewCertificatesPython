@@ -96,7 +96,7 @@ def insertDomain(domain):
     data = (last_row_id, domain, inp_date, inp_date_saying, inp_datetime,
             inp_domain_sld, inp_domain_tld, inp_domain_sld_lenght, 20, inp_date,
             inp_date_saying, inp_datetime, -1, '', '',
-            '', '', 1, 0, 0,
+            '', '', 'Python', 0, 0,
             "Python")
     db.insert(add, data)
 
