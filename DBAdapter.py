@@ -51,14 +51,13 @@ class DBAdapter:
         last_row_id = self.__cursor.lastrowid
         return last_row_id
 
-
     # Insert data ---------------------------------------------------------------------------
     # add = ("INSERT INTO employees "
     #                "(first_name, last_name, hire_date, gender, birth_date) "
     #                "VALUES (%s, %s, %s, %s, %s)")
     # data = ('Geert', 'Vanderkelen', tomorrow, 'M', date(1977, 6, 14))
     def insert(self, add, data):
-
+        print("Insert into MySQL")
         self.__cursor.execute(add, data)
         last_row_id = self.__cursor.lastrowid
         self.__cnx.commit()

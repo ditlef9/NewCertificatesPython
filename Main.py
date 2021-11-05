@@ -11,15 +11,15 @@ import os.path
 
 # Fetch filters ------------------------------------------------------------------------------------
 # Create file if it doesnt exists
-if(os.path.isfile('./filters_include.txt')):
-    print("Loading filters_include.txt")
+if(os.path.isfile('./filters_include_contains.txt')):
+    print("Loading filters_include_contains.txt")
 else:
-    f = open("filters_include.txt", "a")
+    f = open("filters_include_contains.txt", "a")
     f.write(".no\n.is")
     f.close()
 
 # Read filters
-f = open('filters_include.txt') # Open file on read mode
+f = open('filters_include_contains.txt') # Open file on read mode
 filters_include_list = f.read().splitlines() # List with stripped line-breaks
 f.close() # Close file
 filters_include_length = len(filters_include_list)
@@ -29,78 +29,6 @@ print("Lenght=", filters_include_length);
 for filter in filters_include_list:
   print(filter)
 
-
-# Print callback ------------------------------------------------------------------------------------
-def print_callback(message, context):
-    logging.debug("Message -> {}".format(message))
-
-    if message['message_type'] == "heartbeat":
-        return
-
-    if message['message_type'] == "certificate_update":
-        all_domains = message['data']['leaf_cert']['all_domains']
-
-        if len(all_domains) == 0:
-            domain = "NULL"
-        else:
-            domain = all_domains[0]
-
-
-        # Check filters
-        check_if_in_filter = any(substring in domain for substring in filters_include_list)
-        if check_if_in_filter:
-            print(domain)
-            insertDomain(domain)
-
-
-            #sys.stdout.write("FOUND", u"[{}] {} (SAN: {})\n".format(datetime.datetime.now().strftime('%m/%d/%y %H:%M:%S'), domain, ", ".join(message['data']['leaf_cert']['all_domains'][1:])))
-
-        sys.stdout.flush()
-
-
-# Insert domain ------------------------------------------------------------------------------------
-def insertDomain(domain):
-
-    # MySQL Insert
-    db = DBAdapter('localhost', 'root', '', 'quick')
-    db.open()
-
-    inp_date = time.strftime("%Y-%m-%d")
-    inp_date_saying = time.strftime("%d %b %Y") # 5 Nov 2021
-    inp_datetime = time.strftime("%Y-%m-%d %H:%M")
-
-    # Domain sld
-    tsd, td, tsu = extract(domain)  # prints abc, hostname, com from abc.hostname.com
-    inp_domain_sld = td
-    if(tsd != ""):
-        inp_domain_sld = tsd + "." + td
-
-    inp_domain_tld = tsu
-
-    inp_domain_sld_lenght = len(inp_domain_sld)
-
-    # filtered_domain_sld_lenght
-
-    last_row_id= db.lastRowId("q_domains_monitoring_domains_filtered")
-    add = ("INSERT INTO q_domains_monitoring_domains_filtered "
-                    "(filtered_id, filtered_domain_value, filtered_date, filtered_date_saying, filtered_datetime, "
-                    "filtered_domain_sld, filtered_domain_tld, filtered_domain_sld_lenght, filtered_score, filtered_domain_registered_date, "
-                    "filtered_domain_registered_date_saying, filtered_domain_registered_datetime, filtered_domain_seen_before_times, filtered_domain_ip, filtered_domain_host_addr,"
-                    "filtered_domain_host_name, filtered_domain_host_url, filtered_domain_filters_activated, filtered_domain_seen_by_group, filtered_domain_emailed,"
-                   "filtered_notes) "
-                    "VALUES (%s, %s, %s, %s, %s, "
-                    "%s, %s, %s, %s, %s, "
-                    "%s, %s, %s, %s, %s, "
-                    "%s, %s, %s, %s, %s, "
-                   "%s)")
-    data = (last_row_id, domain, inp_date, inp_date_saying, inp_datetime,
-            inp_domain_sld, inp_domain_tld, inp_domain_sld_lenght, 20, inp_date,
-            inp_date_saying, inp_datetime, -1, '', '',
-            '', '', 'Python', 0, 0,
-            "Python")
-    db.insert(add, data)
-
-    db.close()
 
 # Create tables ---------------------------------------------------------------------------------
 def createTables():
@@ -135,11 +63,80 @@ def createTables():
         "`filtered_domain_emailed` int(11) DEFAULT NULL, "
         "`filtered_notes` varchar(200) DEFAULT NULL, "
         " PRIMARY KEY (`filtered_id`) "
-        " ) ENGINE=MyISAM AUTO_INCREMENT=19352 DEFAULT CHARSET=latin1;")
+        " ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;")
 
     db.createTable(domains_filtered)
 
     db.close()
+
+# Print callback ------------------------------------------------------------------------------------
+def print_callback(message, context):
+    logging.debug("Message -> {}".format(message))
+
+    if message['message_type'] == "heartbeat":
+        return
+
+    if message['message_type'] == "certificate_update":
+        all_domains = message['data']['leaf_cert']['all_domains']
+
+        if len(all_domains) == 0:
+            domain = "NULL"
+        else:
+            domain = all_domains[0]
+
+
+        # Check filters
+        for filter in filters_include_list:
+            if filter in domain:
+                print(domain + "(" + filter + ")")
+                insertDomain(domain, filter)
+                #sys.stdout.write("FOUND", u"[{}] {} (SAN: {})\n".format(datetime.datetime.now().strftime('%m/%d/%y %H:%M:%S'), domain, ", ".join(message['data']['leaf_cert']['all_domains'][1:])))
+
+        sys.stdout.flush()
+
+
+# Insert domain ------------------------------------------------------------------------------------
+def insertDomain(domain, filter_activated):
+
+    # MySQL Insert
+    db = DBAdapter('localhost', 'root', '', 'quick')
+    db.open()
+
+    inp_date = time.strftime("%Y-%m-%d")
+    inp_date_saying = time.strftime("%d %b %Y") # 5 Nov 2021
+    inp_datetime = time.strftime("%Y-%m-%d %H:%M")
+
+    # Domain sld
+    tsd, td, tsu = extract(domain)  # prints abc, hostname, com from abc.hostname.com
+    inp_domain_sld = td
+    if(tsd != ""):
+        inp_domain_sld = tsd + "." + td
+
+    inp_domain_tld = tsu
+
+    inp_domain_sld_lenght = len(inp_domain_sld)
+
+    last_row_id= db.lastRowId("q_domains_monitoring_domains_filtered")
+    add = ("INSERT INTO q_domains_monitoring_domains_filtered "
+                    "(filtered_id, filtered_domain_value, filtered_date, filtered_date_saying, filtered_datetime, "
+                    "filtered_domain_sld, filtered_domain_tld, filtered_domain_sld_length, filtered_score, filtered_domain_registered_date, "
+                    "filtered_domain_registered_date_saying, filtered_domain_registered_datetime, filtered_domain_seen_before_times, filtered_domain_ip, filtered_domain_host_addr,"
+                    "filtered_domain_host_name, filtered_domain_host_url, filtered_domain_filters_activated, filtered_domain_seen_by_group, filtered_domain_emailed,"
+                   "filtered_notes) "
+                    "VALUES (%s, %s, %s, %s, %s, "
+                    "%s, %s, %s, %s, %s, "
+                    "%s, %s, %s, %s, %s, "
+                    "%s, %s, %s, %s, %s, "
+                   "%s)")
+    data = (last_row_id, domain, inp_date, inp_date_saying, inp_datetime,
+            inp_domain_sld, inp_domain_tld, inp_domain_sld_lenght, 20, inp_date,
+            inp_date_saying, inp_datetime, -1, '', '',
+            '', '', filter_activated, 0, 0,
+            "Python")
+    db.insert(add, data)
+
+    db.close()
+
 
 
 
