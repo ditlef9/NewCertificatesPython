@@ -158,10 +158,10 @@ def insertDomain(domain, filter_activated):
         db.insert(add, data)
 
         # Notify
-        soundName = "./sound/" + "note" + ".mp3"
-        mixer.init()
-        mixer.music.load(soundName)
-        mixer.music.play()
+        #soundName = "./sound/" + "note" + ".mp3"
+        #mixer.init()
+        #mixer.music.load(soundName)
+        #mixer.music.play()
 
 
     db.close()

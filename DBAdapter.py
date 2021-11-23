@@ -87,7 +87,7 @@ class DBAdapter:
     #                "VALUES (%s, %s, %s, %s, %s)")
     # data = ('Geert', 'Vanderkelen', tomorrow, 'M', date(1977, 6, 14))
     def insert(self, add, data):
-        print("Insert into MySQL")
+        # print("Insert into MySQL")
         self.__cursor.execute(add, data)
         last_row_id = self.__cursor.lastrowid
         self.__cnx.commit()
