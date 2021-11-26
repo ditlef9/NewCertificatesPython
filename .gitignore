@@ -8,4 +8,5 @@ __pycache__/
 *$py.class
 
 # Project files
+filters/
 filters_include_contains.txt

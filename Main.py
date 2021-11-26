@@ -16,26 +16,11 @@ from DBAdapter import DBAdapter
 from tldextract import extract
 import os.path
 from pygame import mixer # pip install pygame
+from ReadFilesToList import ReadFilesToList
+import re
 
-# Fetch filters ------------------------------------------------------------------------------------
-# Create file if it doesnt exists
-if(os.path.isfile('./filters_include_contains.txt')):
-    print("Loading filters_include_contains.txt")
-else:
-    f = open("filters_include_contains.txt", "a")
-    f.write(".no\n.is")
-    f.close()
-
-# Read filters
-f = open('filters_include_contains.txt') # Open file on read mode
-filters_include_list = f.read().splitlines() # List with stripped line-breaks
-f.close() # Close file
-filters_include_length = len(filters_include_list)
-
-print("Lenght=", filters_include_length);
-#print("Filters=", filters_include)
-for filter in filters_include_list:
-  print(filter)
+# Read filters ---------------------------------------------------------------------------------
+filters_list = ReadFilesToList()
 
 
 # Create tables ---------------------------------------------------------------------------------
@@ -92,6 +77,8 @@ def print_callback(message, context):
         else:
             domain = all_domains[0]
 
+        # sys.stdout.write("FOUND", u"[{}] {} (SAN: {})\n".format(datetime.datetime.now().strftime('%m/%d/%y %H:%M:%S'), domain, ", ".join(message['data']['leaf_cert']['all_domains'][1:])))
+
         # Remove www.
         domain_len = len(domain)
         if(domain_len > 4):
@@ -99,12 +86,43 @@ def print_callback(message, context):
             if(check_for_www == "www."):
                 domain = domain[4:]
 
+
+
         # Check filters
-        for filter in filters_include_list:
-            if filter in domain:
-                print(domain + " (" + filter + ")")
-                insertDomain(domain, filter)
-                #sys.stdout.write("FOUND", u"[{}] {} (SAN: {})\n".format(datetime.datetime.now().strftime('%m/%d/%y %H:%M:%S'), domain, ", ".join(message['data']['leaf_cert']['all_domains'][1:])))
+        for line in filters_list():
+            array = line.split("|")
+            keyword = array[0]
+            type = array[1]
+            title = array[2]
+            tld = array[3]
+
+            # Domain tld check (example .com)
+            check_domain = 0
+            if (tld == ""):
+                check_domain = 1
+            else:
+                domain_tld = domain.split(".")[-1]
+                filter_tlds_array = tld.split(",")
+                for t in filter_tlds_array:
+                    if t in domain_tld:
+                        check_domain = 1
+
+            if(check_domain == 1):
+                # print("Checking domain " + domain);
+
+                # Regex, Contains
+                if (type == "regex"):
+                    if re.match(keyword, domain):
+                        print(domain + " (" + type + " " + keyword + ")")
+                        insertDomain(domain, type + " " + keyword)
+                elif (type == "contains"): # Contains
+                    if keyword in domain:
+                        print(domain + " (" + type + " " + keyword + ")")
+                        insertDomain(domain, type + " " + keyword)
+                # elifcontains
+            # check_domain == 1
+
+        # for line in filters_list
 
         sys.stdout.flush()
 
@@ -174,5 +192,5 @@ createTables()
 
 
 logging.basicConfig(format='[%(levelname)s:%(name)s] %(asctime)s - %(message)s', level=logging.INFO)
-
 certstream.listen_for_events(print_callback, url='wss://certstream.calidog.io/')
+
