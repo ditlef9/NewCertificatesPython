@@ -19,8 +19,7 @@ from pygame import mixer # pip install pygame
 from ReadFilesToList import ReadFilesToList
 import re
 
-# Read filters ---------------------------------------------------------------------------------
-filters_list = ReadFilesToList()
+
 
 
 # Create tables ---------------------------------------------------------------------------------
@@ -188,9 +187,14 @@ def insertDomain(domain, filter_activated):
 
 
 # Scriptstart ------------------------------------------------------------------------------------
+
+# Create db tables
 createTables()
 
+# Read filters
+filters_list = ReadFilesToList()
 
+# Start logging
 logging.basicConfig(format='[%(levelname)s:%(name)s] %(asctime)s - %(message)s', level=logging.INFO)
 certstream.listen_for_events(print_callback, url='wss://certstream.calidog.io/')
 
