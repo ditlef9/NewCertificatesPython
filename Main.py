@@ -77,7 +77,7 @@ def print_callback(message, context):
             domain = all_domains[0]
 
         # Print domains
-        sys.stdout.write("FOUND", u"[{}] {} (SAN: {})\n".format(datetime.datetime.now().strftime('%m/%d/%y %H:%M:%S'), domain, ", ".join(message['data']['leaf_cert']['all_domains'][1:])))
+        #sys.stdout.write("FOUND", u"[{}] {} (SAN: {})\n".format(datetime.datetime.now().strftime('%m/%d/%y %H:%M:%S'), domain, ", ".join(message['data']['leaf_cert']['all_domains'][1:])))
 
         # Remove www.
         domain_len = len(domain)
