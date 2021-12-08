@@ -11,7 +11,7 @@
 import logging
 import sys
 import time
-import certstream
+import certstream # pip install certstream
 from DBAdapter import DBAdapter
 from tldextract import extract
 import os.path

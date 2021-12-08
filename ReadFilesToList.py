@@ -21,6 +21,10 @@ class ReadFilesToList:
         self.filenames_list = [] # Generate list of all txt files to read
         self.filters_list = [] # Generate list of all keywords separated with |
 
+        # Check if filters dir exists
+        if not os.path.exists("filters"):
+            os.makedirs("filters")
+
         # Find all filters in "filters" directory
         count_files = 0
         for filename in os.listdir("filters"):
