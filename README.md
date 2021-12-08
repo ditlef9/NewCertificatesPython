@@ -8,14 +8,18 @@ Please read GNU GENERAL PUBLIC LICENSE.txt
 a) Download and install latest version of Python<br />
 b) Download and install PyCharm<br />
 c) Check out this project in PyCharm. <br />
-d) Inside PyCharm open terminal and enter: 
+d) Upgrade PIP by opening CMD as Administrator and enter:
 
-* pip install --upgrade pip
-* pip install certstream<br />
-* pip install mysql-connector-python<br />
-* pip install pygame
+* cd C:\Users\{username}\AppData\Local\Programs\Python\Python{version}
+* python.exe -m pip install --upgrade pip
 
-e) Inside PyCharm project select "Add a Configuration" and make it point to file Main.py.
+e) In the same CMD window install the following libraries: 
+
+* python.exe -m pip install certstream<br />
+* python.exe -m pip install mysql-connector-python<br />
+* python.exe -m pip install pygame
+
+f) Inside PyCharm project select "Add a Configuration" and make it point to file Main.py.
 
 # 3 Setup MySQL
 a) Install MySQL<br />
