@@ -10,7 +10,7 @@ b) Download and install PyCharm<br />
 c) Check out this project in PyCharm. <br />
 d) Inside PyCharm open terminal and enter: 
 
-* C:\Users\{your_username}\AppData\Local\Programs\Python\Python310\python.exe -m pip install --upgrade pip
+* pip install --upgrade pip
 * pip install certstream<br />
 * pip install mysql-connector-python<br />
 * pip install pygame
