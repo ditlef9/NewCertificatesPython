@@ -15,9 +15,10 @@ d) Upgrade PIP by opening CMD as Administrator and enter:
 
 e) In the same CMD window install the following libraries: 
 
-* python.exe -m pip install wheel<br />
-* python.exe -m pip install certstream<br />
-* python.exe -m pip install mysql-connector-python<br />
+* python.exe -m pip install wheel
+* python.exe -m pip install certstream
+* python.exe -m pip install mysql-connector-python
+* python.exe -m pip install tldextract
 * python.exe -m pip install pygame
 
 f) Inside PyCharm project select "Add a Configuration" and make it point to file Main.py.
