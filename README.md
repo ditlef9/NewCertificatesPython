@@ -10,7 +10,7 @@ b) Download and install PyCharm<br />
 c) Check out this project in PyCharm. <br />
 d) Upgrade PIP by opening CMD as Administrator and enter:
 
-* cd C:\Users\{username}\AppData\Local\Programs\Python\Python{version}
+* cd C:\Users\\{username}\AppData\Local\Programs\Python\Python{version}
 * python.exe -m pip install --upgrade pip
 
 e) In the same CMD window install the following libraries: 
