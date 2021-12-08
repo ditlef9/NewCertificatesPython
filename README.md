@@ -15,6 +15,7 @@ d) Upgrade PIP by opening CMD as Administrator and enter:
 
 e) In the same CMD window install the following libraries: 
 
+* python.exe -m pip install wheel<br />
 * python.exe -m pip install certstream<br />
 * python.exe -m pip install mysql-connector-python<br />
 * python.exe -m pip install pygame
