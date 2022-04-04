@@ -102,7 +102,7 @@ def print_callback(message, context):
 
             # Domain tld check (example .com)
             check_domain = 0
-            if (tld == ""):
+            if (tld == "" or tld == "*"):
                 check_domain = 1
             else:
                 domain_tld = domain.split(".")[-1]
