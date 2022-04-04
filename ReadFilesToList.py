@@ -38,7 +38,7 @@ class ReadFilesToList:
             f = open("filters/bedragerier.txt", "w")
             f.write("keyword					type		title		tld\n")
             f.write("/([a-zA-Z]+)-([0-9])/			regex		text-integer	no|com\n")
-            f.write(".no.					contains	.no.		no|com\n")
+            f.write(".no.					contains	.no.		*\n")
             f.close()
 
 
